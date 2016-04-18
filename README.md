@@ -1,4 +1,4 @@
-# Angular Translate Boilerplate Demo App
+# IndexedDB Boilerplate Demo App
 
 This project serves as a very simple boilerplate to start building an IndexedDB database.
 
