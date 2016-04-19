@@ -3,7 +3,7 @@
 var idbSupported = false;
 var db;
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener('DOMContentLoaded', function(){
 
   window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 
@@ -23,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function(){
     openRequest.onupgradeneeded = function(event) {
         var store = event.target.result;
 
-        console.log("Upgrading IndexedDB");
-        if(!store.objectStoreNames.contains("vehicles")) {
-            store.createObjectStore("vehicles");
+        console.log('Upgrading IndexedDB');
+        if(!store.objectStoreNames.contains('vehicles')) {
+            store.createObjectStore('vehicles');
         }
     }
 
@@ -42,10 +42,12 @@ document.addEventListener("DOMContentLoaded", function(){
         vehicles.forEach(function(vehicle, index) {
           add(store, 'vehicles', vehicle, index);
         });
+
+        read(store, 'vehicles', 0);
     }
 
     openRequest.onerror = function(event) {
-        console.log("Error");
+        console.log('Error');
         console.dir(event);
     }
   }
@@ -61,6 +63,28 @@ function add(store, name, entry, index) {
    };
 
    request.onerror = function(event) {
-      console.log("Unable to add %s\r\nIt already exists in IndexedDB! ");
+      console.log('Unable to add %s\r\nIt already exists in IndexedDB!');
+   }
+}
+
+function read(store, name, entry) {
+   var transaction = store.transaction([name]);
+   var objectStore = transaction.objectStore(name);
+   var request = objectStore.get(entry);
+
+   request.onsuccess = function(event) {
+     if(request.result) {
+       console.log(
+         'Make: %s Brand: %s', request.result.make, request.result.brand);
+     } else {
+        console.log('Unable to find the key %s', entry);
+     }
+   };
+
+   request.onerror = function(event) {
+      console.log(
+        'Unable to retrive %s\r\nIt already exists in IndexedDB!',
+        entry
+      );
    }
 }
